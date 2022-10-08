@@ -1,10 +1,12 @@
 #nullable enable
 #addin nuget:?package=Cake.Git&version=2.0.0
 
+const string EnvKey     = "PAT_FOR_GITHUB";
+const string RepoPath   = "mrange/cake.tool.experiments.git";
+
 var target      = Argument("target", "GithubAction");
-var repoPath    = "mrange/cake.tool.experiments.git";
-var githubPat   = EnvironmentVariable("PAT_FOR_GITHUB");
-var authRepoUri = $"https://{githubPat}@github.com/{repoPath}";
+var githubPat   = EnvironmentVariable(EnvKey);
+var authRepoUri = $"https://{githubPat}@github.com/{RepoPath}";
 
 record BuildData(
         DirectoryPath RootPath
@@ -16,6 +18,10 @@ record BuildData(
 
 Setup(ctx =>
     {
+        if (string.IsNullOrWhiteSpace(githubPat))
+        {
+            throw new Exception($"Environment variable {EnvKey} must configured a personal access token that change do changes to: {RepoPath}");
+        }
         var rootPath                = (DirectoryPath)ctx.Directory(".");
         var githubPath              = rootPath.Combine("github");
         var repoPath                = githubPath.Combine("repo");
@@ -83,9 +89,9 @@ Task("PushRepo")
     Information($"Adding changes to repo {bd.RepoPath}");
     GitAddAll(bd.RepoPath);
 
-    Information($"Creating commit in repo {bd.RepoPath}");
-    try
+    if (GitHasUncommitedChanges(bd.RepoPath))
     {
+        Information($"Creating commit in repo {bd.RepoPath}");
         var commit = GitCommit(
             bd.RepoPath
         ,   "mrange"
@@ -98,7 +104,7 @@ Task("PushRepo")
         Information($"Changes detected... pushing repo: {bd.RepoPath}");
         GitPush(bd.RepoPath);
     }
-    catch(LibGit2Sharp.EmptyCommitException)
+    else
     {
         Information($"No changes detected... skipping push to github");
     }

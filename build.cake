@@ -1,8 +1,11 @@
 #nullable enable
 #addin nuget:?package=Cake.Git&version=2.0.0
 
-var target        = Argument("target", "GithubAction");
-var repoUri       = "https://github.com/mrange/cake.tool.experiments.git";
+var target      = Argument("target", "GithubAction");
+var repoPath    = "mrange/cake.tool.experiments.git";
+var repoUri     = $"https://github.com/{repoPath}";
+var githubPat   = EnvironmentVariable("PAT_FOR_GITHUB");
+var authRepoUri = $"https://{githubPat}@github.com/{repoPath}";
 
 record BuildData(
         DirectoryPath RootPath

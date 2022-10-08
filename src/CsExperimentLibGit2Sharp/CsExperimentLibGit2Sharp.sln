@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.32916.344
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CsExperimentLibGit2Sharp", "CsExperimentLibGit2Sharp.csproj", "{D89F90F3-52AA-4D6D-AFB0-250E3A4508AB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D89F90F3-52AA-4D6D-AFB0-250E3A4508AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D89F90F3-52AA-4D6D-AFB0-250E3A4508AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D89F90F3-52AA-4D6D-AFB0-250E3A4508AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D89F90F3-52AA-4D6D-AFB0-250E3A4508AB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5DB71C2E-2302-4BAE-B533-F8638BE3D034}
+	EndGlobalSection
+EndGlobal

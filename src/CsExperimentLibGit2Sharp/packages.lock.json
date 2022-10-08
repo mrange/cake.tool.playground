@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net7.0": {
+      "LibGit2Sharp": {
+        "type": "Direct",
+        "requested": "[0.27.0-preview-0182, )",
+        "resolved": "0.27.0-preview-0182",
+        "contentHash": "YgSFGX7q+KwzkjiD04sZ6Zr8GVrG4o7dHUwM9eDsliT350HxX83smtJc8kyMBiBLyjX4X3qB7aIs2KJL3Uh1og==",
+        "dependencies": {
+          "LibGit2Sharp.NativeBinaries": "[2.0.315-alpha.0.9]"
+        }
+      },
+      "LibGit2Sharp.NativeBinaries": {
+        "type": "Transitive",
+        "resolved": "2.0.315-alpha.0.9",
+        "contentHash": "Cl9E9ZRZm2ma5k/gD/9+f5WAh/9ayhENos/jLkSmPmzkuKl8qkTaLHA9j70qEZ1RSRceDlIwbfSYzVD5JaxHzg=="
+      }
+    }
+  }
+}

@@ -3,7 +3,6 @@
 
 var target      = Argument("target", "GithubAction");
 var repoPath    = "mrange/cake.tool.experiments.git";
-var repoUri     = $"https://github.com/{repoPath}";
 var githubPat   = EnvironmentVariable("PAT_FOR_GITHUB");
 var authRepoUri = $"https://{githubPat}@github.com/{repoPath}";
 
@@ -60,7 +59,7 @@ Task("CloneRepo")
     .Does<BuildData>((ctx, bd) =>
 {
     Information($"Cloning repo {bd.RepoPath}");
-    GitClone(repoUri, bd.RepoPath);
+    GitClone(authRepoUri, bd.RepoPath);
 });
 
 Task("UpdateRepo")
@@ -95,6 +94,9 @@ Task("PushRepo")
         );
         var sha = commit.Sha;
         Information($"Commit created with SHA: {sha}");
+
+        Information($"Changes detected... pushing repo: {bd.RepoPath}");
+        GitPush(bd.RepoPath);
     }
     catch(LibGit2Sharp.EmptyCommitException)
     {

@@ -95,7 +95,7 @@ Task("PushRepo")
         var commit = GitCommit(
             bd.RepoPath
         ,   "mrange"
-        ,   "marten_range@hotmailc.com"
+        ,   "marten_range@hotmail.com"
         ,   "Automatic update of exported model"
         );
         var sha = commit.Sha;

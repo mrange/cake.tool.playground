@@ -7,7 +7,7 @@ const string RepoPath   = "mrange/cake.tool.experiments.git";
 // The github Personal Access Token (PAT)
 // Careful not to log this
 var githubPat   = EnvironmentVariable(EnvKey);
-var target      = Argument("target", "GithubAction");
+var target      = Argument("target", "UpdateRepo");
 
 var repoUri     = $"https://github.com/{RepoPath}";
 // Careful not to log this

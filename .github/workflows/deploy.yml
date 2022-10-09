@@ -1,0 +1,20 @@
+name: deploy
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v3
+    - name: Run the build script
+      uses: cake-build/cake-action@v1
+      env:
+        PAT_FOR_GITHUB: ${{ secrets.PAT_FOR_GITHUB }}
+      with:
+        target: UpdateRepo

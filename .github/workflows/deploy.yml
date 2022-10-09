@@ -17,4 +17,4 @@ jobs:
       env:
         PAT_FOR_GITHUB: ${{ secrets.PAT_FOR_GITHUB }}
       with:
-        target: UpdateRepo
+        target: GithubAction

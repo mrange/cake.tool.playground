@@ -4,8 +4,13 @@
 const string EnvKey     = "PAT_FOR_GITHUB";
 const string RepoPath   = "mrange/cake.tool.experiments.git";
 
-var target      = Argument("target", "GithubAction");
+// The github Personal Access Token (PAT)
+// Careful not to log this
 var githubPat   = EnvironmentVariable(EnvKey);
+var target      = Argument("target", "GithubAction");
+
+var repoUri     = $"https://github.com/{RepoPath}";
+// Careful not to log this
 var authRepoUri = $"https://{githubPat}@github.com/{RepoPath}";
 
 record BuildData(
@@ -64,8 +69,8 @@ Task("CloneRepo")
     .WithCriteria<BuildData>((ctx, bd) => !DirectoryExists(bd.RepoPath))
     .Does<BuildData>((ctx, bd) =>
 {
-    Information($"Cloning repo {bd.RepoPath}");
-    GitClone(authRepoUri, bd.RepoPath);
+    Information($"Cloning repo {repoUri} into {bd.RepoPath}");
+    GitClone(repoUri, bd.RepoPath);
 });
 
 Task("UpdateRepo")
@@ -101,8 +106,19 @@ Task("PushRepo")
         var sha = commit.Sha;
         Information($"Commit created with SHA: {sha}");
 
-        Information($"Changes detected... pushing repo: {bd.RepoPath}");
-        GitPush(bd.RepoPath);
+        // GitPush don't work with Github PAT, so invoke git manually
+        Information($"Changes detected... pushing repo: {bd.RepoPath} to {repoUri}");
+        var ec = StartProcess(
+            "git"
+        ,   new ProcessSettings()
+            {
+                Arguments           = $"push {authRepoUri}"
+            ,   WorkingDirectory    = bd.RepoPath
+            });
+        if (ec != 0)
+        {
+            throw new Exception($"Push repo: {bd.RepoPath} to {repoUri} failed with: {ec}");
+        }
     }
     else
     {

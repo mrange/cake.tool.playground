@@ -57,7 +57,7 @@ Task("InitRepo")
 
 Task("CleanRepo")
     .IsDependentOn("InitRepo")
-    .WithCriteria(c => HasArgument("rebuild"))
+    .WithCriteria(c => HasArgument("rebuild"), "Specify --rebuild to run")
     .Does<BuildData>((ctx, bd) =>
 {
     Information($"Cleaning {bd.GithubPath}");
@@ -66,7 +66,7 @@ Task("CleanRepo")
 
 Task("CloneRepo")
     .IsDependentOn("CleanRepo")
-    .WithCriteria<BuildData>((ctx, bd) => !DirectoryExists(bd.RepoPath))
+    .WithCriteria<BuildData>((ctx, bd) => !DirectoryExists(bd.RepoPath), "Repo already exists")
     .Does<BuildData>((ctx, bd) =>
 {
     Information($"Cloning repo {repoUri} into {bd.RepoPath}");
@@ -89,40 +89,34 @@ Task("UpdateRepo")
 
 Task("PushRepo")
     .IsDependentOn("UpdateRepo")
+    .WithCriteria<BuildData>((ctx, bd) => GitHasUncommitedChanges(bd.RepoPath), "Repo has no uncommitted changes")
     .Does<BuildData>((ctx, bd) =>
 {
     Information($"Adding changes to repo {bd.RepoPath}");
     GitAddAll(bd.RepoPath);
 
-    if (GitHasUncommitedChanges(bd.RepoPath))
-    {
-        Information($"Creating commit in repo {bd.RepoPath}");
-        var commit = GitCommit(
-            bd.RepoPath
-        ,   "mrange"
-        ,   "marten_range@hotmail.com"
-        ,   "Automatic update of exported model"
-        );
-        var sha = commit.Sha;
-        Information($"Commit created with SHA: {sha}");
+    Information($"Creating commit in repo {bd.RepoPath}");
+    var commit = GitCommit(
+        bd.RepoPath
+    ,   "mrange"
+    ,   "marten_range@hotmail.com"
+    ,   "Automatic update of exported model"
+    );
+    var sha = commit.Sha;
+    Information($"Commit created with SHA: {sha}");
 
-        // GitPush don't work with Github PAT, so invoke git manually
-        Information($"Changes detected... pushing repo: {bd.RepoPath} to {repoUri}");
-        var ec = StartProcess(
-            "git"
-        ,   new ProcessSettings()
-            {
-                Arguments           = $"push {authRepoUri}"
-            ,   WorkingDirectory    = bd.RepoPath
-            });
-        if (ec != 0)
+    // GitPush don't work with Github PAT, so invoke git manually
+    Information($"Changes detected... pushing repo: {bd.RepoPath} to {repoUri}");
+    var ec = StartProcess(
+        "git"
+    ,   new ProcessSettings()
         {
-            throw new Exception($"Push repo: {bd.RepoPath} to {repoUri} failed with: {ec}");
-        }
-    }
-    else
+            Arguments           = $"push {authRepoUri}"
+        ,   WorkingDirectory    = bd.RepoPath
+        });
+    if (ec != 0)
     {
-        Information($"No changes detected... skipping push to github");
+        throw new Exception($"Push repo: {bd.RepoPath} to {repoUri} failed with: {ec}");
     }
 });
 
